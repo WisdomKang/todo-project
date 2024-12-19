@@ -10,7 +10,7 @@ import (
 func main() {
 	fmt.Println("test hello!")
 
-	dns := "host=localhost user=root password=todo5432 dbname=gorm port=15432 sslmode=disable TimeZone=Asia/Seoul"
+	dns := "host=localhost user=postgres password=todo5432 dbname=gorm port=15432 sslmode=disable TimeZone=Asia/Seoul"
 
 	db, err := gorm.Open(postgres.Open(dns), &gorm.Config{})
 	if err != nil {
