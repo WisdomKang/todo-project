@@ -2,12 +2,12 @@ package main
 
 import (
 	"todo-project/config"
+	route "todo-project/routes"
 )
 
 func main() {
+	config.InitConfig()
+	route.SetRoute()
 
-	config.LoadEnv()
-	config.InitDatabase()
-	config.Migration()
-
+	route.Routes.Run("localhost:8080")
 }
