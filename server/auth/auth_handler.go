@@ -1,21 +1,22 @@
 package auth
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"todo-project/config"
+	"todo-project/utils"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/oauth2"
 )
 
-func GetOauthLoginPage(ctx *gin.Context) {
-	url := config.GoogleAuthConfig.AuthCodeURL("")
+func LoginPageHandler(ctx *gin.Context) {
+	url := config.GoogleAuthConfig.AuthCodeURL("", oauth2.AccessTypeOffline)
 	log.Printf("page redirect : %v", url)
 	ctx.Redirect(http.StatusPermanentRedirect, url)
 }
 
-func ExchangeToken(ctx *gin.Context) {
+func ExchangeTokenHandler(ctx *gin.Context) {
 	code := ctx.Query("code")
 
 	token, err := config.GoogleAuthConfig.Exchange(ctx, code)
@@ -24,23 +25,19 @@ func ExchangeToken(ctx *gin.Context) {
 		return
 	}
 
-	client := config.GoogleAuthConfig.Client(ctx, token)
+	utils.PrintStruct(token)
 
-	resp, err := client.Get("https://www.googleapis.com/oauth2/v2/userinfo")
-	if err != nil {
-		log.Printf("erro : %v", err)
-		ctx.Error(err)
-		return
-	}
-	defer resp.Body.Close()
-
-	var userInfo map[string]interface{}
-	err = json.NewDecoder(resp.Body).Decode(&userInfo)
-	if err != nil {
-		log.Printf("erro : %v", err)
-		ctx.Error(err)
+	idToken, ok := token.Extra("id_token").(string)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error during token exchange"})
 		return
 	}
 
-	log.Println("User Info:", userInfo)
+	ctx.SetCookie("id_token", idToken, 3600, "/", "", true, true)
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Login successful"})
+}
+
+func RefreshTokenHandler(ctx *gin.Context) {
+
 }

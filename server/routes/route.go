@@ -13,10 +13,12 @@ func SetRoute() {
 	Routes = gin.Default()
 	Protected := Routes.Group("/api")
 
+	Protected.Use(auth.AuthenticationMiddleware)
 	Protected.GET("/todo")
 	Protected.POST("/todo")
 
-	Routes.GET("/auth/v1/google", auth.GetOauthLoginPage)
-	Routes.GET("/auth/v1/token", auth.ExchangeToken)
+	Routes.GET("/auth/v1/google", auth.LoginPageHandler)
+	Routes.GET("/auth/v1/token", auth.ExchangeTokenHandler)
+	Routes.GET("/auth/v1/refresh", auth.RefreshTokenHandler)
 
 }

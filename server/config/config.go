@@ -39,7 +39,7 @@ func InitAuth() {
 		ClientID:     os.Getenv("GOOGLE_OAUTH_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_OAUTH_CLIENT_SECERT"),
 		RedirectURL:  os.Getenv("GOOGLE_OAUTH_REDIRECT_URL"),
-		Scopes:       []string{"openid"},
+		Scopes:       []string{"openid", "email", "profile"},
 		Endpoint:     google.Endpoint,
 	}
 
