@@ -9,5 +9,5 @@ func main() {
 	config.InitConfig()
 	route.SetRoute()
 
-	route.Routes.Run("localhost:8080")
+	route.Routes.Run("localhost:9090")
 }
